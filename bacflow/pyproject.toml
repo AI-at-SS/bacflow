@@ -1,3 +1,97 @@
 [build-system]
-build-backend = "setuptools.build_meta"
-requires = ["setuptools<71", "wheel"]
+requires = ["hatchling>1"]
+build-backend = "hatchling.build"
+
+
+[project]
+name = "bacflow"
+version = "0.1.0"
+description = "A simulation framework for blood alcohol content (BAC) estimation"
+readme = "README.md"
+requires-python = ">3.9"
+keywords = ["BAC", "mindfulness", "modeling", "safety", "simulation"]
+dependencies = [
+  "geopy>2",
+  "numpy>2",
+  "pandas>2",
+  "plotly>5"
+]
+
+
+[dependency-groups]
+contrib = [
+  "mypy>1",
+  "pytest>8",
+  "pytest-asyncio>0.24",
+  "ruff>0.9",
+]
+
+
+[tool.uv]
+default-groups = ["contrib"]
+
+
+[tool.ruff]
+src = ["examples", "src", "tests"]
+exclude = [
+  ".git-rewrite",
+  ".git",
+  ".ipynb_checkpoints",
+  ".mypy_cache",
+  ".nox",
+  ".pytest_cache",
+  ".pytype",
+  ".ruff_cache",
+  ".tox",
+  ".venv",
+  ".vscode",
+  "build",
+  "dist",
+  "site-packages",
+  "venv",
+]
+indent-width = 4
+line-length = 88
+
+[tool.ruff.format]
+indent-style = "space"
+line-ending = "auto"
+quote-style = "double"
+
+[tool.ruff.lint]
+select = [
+  "ARG",
+  "B",
+  "C4",
+  "EM",
+  "EXE",
+  "G",
+  "I",
+  "ICN",
+  "NPY",
+  "PD",
+  "PGH",
+  "PIE",
+  "PL",
+  "PT",
+  "PTH",
+  "RET",
+  "RUF",
+  "SIM",
+  "T20",
+  "UP",
+  "YTT",
+]
+ignore = [
+  "B008",
+  "PLR09",
+  "PLR2004",
+  "RET504"
+]
+
+[tool.ruff.lint.isort]
+known-first-party = ["bacflow"]
+lines-after-imports = 2
+
+[tool.ruff.lint.per-file-ignores]
+"tests/**" = ["T20"]

@@ -1,9 +1,3 @@
-## usage
-
-```bash
-streamlit run webapp.py
-```
-
 # BACflow
 
 BACflow is a Python library for estimating Blood Alcohol Concentration (BAC) using advanced simulation models inspired by Widmark's formula and subsequent research. It supports dynamic modeling of alcohol absorption and elimination kinetics through efficient, vectorized computations and is designed to integrate easily with user interfaces (e.g., Streamlit apps) or command-line tools.
