@@ -4,7 +4,7 @@ import numpy as np
 import pandas as pd
 
 from bacflow.modeling import calculate_bac_for_model
-from bacflow.schemas import Drink, Model, Person, Food
+from bacflow.schemas import Drink, Model, Person, FoodIntake
 
 # Mapping of food categories to absorption halflife in seconds (6, 9, 12, 15, 18 minutes)
 FOOD_HALFLIFE_MAP = {
@@ -15,7 +15,7 @@ FOOD_HALFLIFE_MAP = {
     "heavy": 18 * 60,
 }
 
-def compute_halflife_vector(t_sec: np.ndarray, food_intakes: list[Food], default_halflife: float) -> np.ndarray:
+def compute_halflife_vector(t_sec: np.ndarray, food_intakes: list[FoodIntake], default_halflife: float) -> np.ndarray:
     """
     Given a vector of time stamps (in seconds), compute an effective absorption halflife for each time point.
     For each t in t_sec, we use the most recent food intake (if any) to determine the halflife.
@@ -39,7 +39,7 @@ def cumulative_absorption(
     end_time: datetime,
     dt: float,  # simulation time step in seconds
     default_halflife: float,
-    food_intakes: list[Food] = None,
+    food_intakes: list[FoodIntake] = None,
     initial_alc: float = 0.0
 ) -> pd.DataFrame:
     """
@@ -87,7 +87,7 @@ def simulate(
     default_halflife: float,
     initial_alc: float,
     simulation: list[Model],
-    food_intakes: list[Food] = None
+    food_intakes: list[FoodIntake] = None
 ) -> dict[Model, pd.DataFrame]:
     """
     Runs the BAC simulation using the provided parameters.

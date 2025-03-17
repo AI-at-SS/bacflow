@@ -1,6 +1,6 @@
-from datetime import datetime, timedelta, timezone
+from datetime import datetime, timedelta, timezone, date
 
-from bacflow.schemas import Drink, Person, Model, Sex
+from bacflow.schemas import Drink, Person, Model, Sex, FoodIntake
 from bacflow.plotting import plot_simulation
 from bacflow.simulation import simulate, aggregate_simulation_results, identify_threshold_times
 
@@ -20,10 +20,24 @@ drink1 = Drink(
     time=start_time + timedelta(minutes=10),
     sip_interval=1
 )
-drinks = [drink1]
+drink2 = Drink(
+    name="Wine",
+    vol=0.15,           # in liters
+    alc_prop=0.12,      # 12% alcohol
+    time=start_time + timedelta(minutes=20),
+    sip_interval=1
+)
+drinks = [drink1, drink2]
+
+# Add a sample food intake
+food_intake = FoodIntake(
+    time=start_time + timedelta(minutes=15),
+    category="moderate"  # using string; alternatively, FoodIntakeCategory.moderate if imported
+)
+food_intakes = [food_intake]
 
 # Create a sample person
-person = Person(age=30, height=1.75, weight=70, sex=Sex.M)
+person = Person(DoB=date(1997, 5, 31), height=1.75, weight=70, sex=Sex.M)
 
 # Simulate using a selected model (e.g., Seidl)
 sim_models = [Model.Seidl]

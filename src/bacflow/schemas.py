@@ -3,6 +3,8 @@ from dataclasses import dataclass, field
 from datetime import date, datetime, timedelta
 from enum import Enum
 
+from typing_extensions import Self
+
 
 class FoodIntakeCategory(str, Enum):
     light = "light"  # small amount of food, typically consumed to curb hunger between meals, such as a piece of fruit, a handful of nuts, or a small yogurt.
@@ -74,7 +76,7 @@ class Drink:
         alc_vol = self.vol * self.alc_prop
         self.alc_kg = alc_vol * 0.789
 
-    def split_into_sips(self) -> list[typing.Self]:
+    def split_into_sips(self) -> list[Self]:
         if self.sip_interval == 1:
             return [self]
 

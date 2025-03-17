@@ -1,7 +1,20 @@
-.env
-.DS_Store/
-.venv/
-.vscode/
-__pycache__/
+# caching
+__pycache__
+.DS_Store
+.mypy_cache
+.pytest_cache
+.ruff_cache
+
+# distribution
 build/
 dist/
+
+# environment
+.env
+
+# IDE
+.idea
+.vscode
+
+# virtual environment
+.venv
