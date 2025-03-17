@@ -75,7 +75,7 @@ person = Person(DoB=date(1997, 5, 31), height=1.75, weight=70, sex=Sex.M)
 
 # Simulate using a selected model (e.g., Seidl)
 sim_models = [Model.Seidl]
-sim_results = simulate(drinks, person, start_time, end_time, dt, default_halflife, initial_alc, sim_models)
+sim_results = simulate(drinks, person, start_time, end_time, dt, default_halflife, initial_alc, sim_models, food_intakes)
 
 # Aggregate results if multiple models are simulated
 aggregated = aggregate_simulation_results(sim_results)
