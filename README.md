@@ -106,7 +106,7 @@ Contributions are welcome! Fork the repository, create a branch for your feature
 ```bash
 git clone https://github.com/yourusername/bacflow.git
 cd bacflow
-uv sync --extra contrib
+uv sync --all-extras
 ```
 
 ## 🔗 license
