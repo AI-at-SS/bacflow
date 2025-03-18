@@ -7,34 +7,6 @@ from typing_extensions import Self
 from bacflow.common import DoB_to_age
 
 
-@dataclass
-class Coordinates:
-    latitude: float
-    longitude: float
-
-
-@dataclass
-class Location:
-    coords: Coordinates
-
-    @property
-    def latitude(self) -> float:
-        return self.coords.latitude
-
-    @property
-    def longitude(self) -> float:
-        return self.coords.longitude
-
-
-class FoodIntakeCategory(str, Enum):
-    light = "light"  # small amount of food, typically consumed to curb hunger between meals, such as a piece of fruit, a handful of nuts, or a small yogurt.
-    moderate = "moderate"  # sufficient amount of food to satisfy hunger, usually a regular meal, such as a sandwich, a bowl of salad, or a standard portion of pasta.
-    heavy = "heavy"  # large amount of food, often consumed for special occasions or when very hungry, such as a multi-course meal with several dishes, or a buffet.
-
-    def __str__(self) -> str:
-        return self.value
-
-
 class DriverProfile(str, Enum):
     regular = "regular"
     novice = "novice"
@@ -79,40 +51,62 @@ class Person:
         return DoB_to_age(self.DoB)
 
 
-@dataclass
-class FoodIntake:
-    time: datetime
-    category: FoodIntakeCategory
+class FoodCategory(str, Enum):
+    light = "light"  # small amount of food, typically consumed to curb hunger between meals, such as a piece of fruit, a handful of nuts, or a small yogurt.
+    moderate = "moderate"  # sufficient amount of food to satisfy hunger, usually a regular meal, such as a sandwich, a bowl of salad, or a standard portion of pasta.
+    heavy = "heavy"  # large amount of food, often consumed for special occasions or when very hungry, such as a multi-course meal with several dishes, or a buffet.
+
+    def __str__(self) -> str:
+        return self.value
 
 
 @dataclass
-class Drink:
-    name: str
-    vol: float
-    alc_prop: float
+class Food:
+    category: FoodCategory
     time: datetime
-    sip_interval: int
-    alc_kg: float = field(init=False)
+
+
+class BeverageCategory(str, Enum):
+    beer = "beer"
+    wine = "wine"
+    longdrink = "long drink"
+    cocktail = "cocktail"
+    shot = "shot"
+    eggnog = "eggnog"
+
+    def __str__(self) -> str:
+        return self.value
+
+
+@dataclass
+class Beverage:
+    category: BeverageCategory
+    time: datetime
+    volume: float
+    proportion: float
+    interval: int
+    quantity: float = field(init=False)
 
     def __post_init__(self):
-        alc_vol = self.vol * self.alc_prop
-        self.alc_kg = alc_vol * 0.789
+        volume = self.volume * self.proportion
+        self.quantity = volume * 0.789
 
-    def split_into_sips(self) -> list[Self]:
-        if self.sip_interval == 1:
+    def distribute(self) -> list[Self]:
+        """ditributes the beverage into uniform sips in the time interval"""
+        if self.interval == 1:
             return [self]
 
         sips = []
-        sip_volume = self.vol / self.sip_interval
-        for i in range(self.sip_interval):
-            sip_time = self.time + timedelta(minutes=i)
+        volume = self.volume / self.interval
+
+        for i in range(self.interval):
             sips.append(
-                Drink(
-                    name=self.name,
-                    vol=sip_volume,
-                    alc_prop=self.alc_prop,
-                    time=sip_time,
-                    sip_interval=1,
+                Beverage(
+                    category=self.category,
+                    time=self.time + timedelta(minutes=i),
+                    volume=volume,
+                    proportion=self.proportion,
+                    interval=1,
                 )
             )
 
