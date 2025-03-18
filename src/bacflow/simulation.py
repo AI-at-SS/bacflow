@@ -32,10 +32,7 @@ def compute_halflife_vector(
     sorted_food = sorted(food_intakes, key=lambda f: f.time)
     food_times = np.array([f.time.timestamp() for f in sorted_food])
     food_values = np.array(
-        [
-            FOOD_HALFLIFE_MAP.get(f.category.lower(), default_halflife)
-            for f in sorted_food
-        ]
+        [FOOD_HALFLIFE_MAP.get(f.category.lower(), default_halflife) for f in sorted_food]
     )
     # For each t in t_sec, find the index of the last food intake event (if any)
     indices = np.searchsorted(food_times, t_sec, side="right")
@@ -82,9 +79,7 @@ def cumulative_absorption(
         # For t < drink_start, absorption is 0
         positive_deltas = np.maximum(time_deltas, 0)
         # Compute absorption using the dynamic halflife at each time step
-        absorption_mat[i, :] = drink.alc_kg * (
-            1 - np.exp(-positive_deltas * ln2 / halflife_vector)
-        )
+        absorption_mat[i, :] = drink.alc_kg * (1 - np.exp(-positive_deltas * ln2 / halflife_vector))
 
     kg_absorbed = absorption_mat.sum(axis=0) + initial_alc
     df = pd.DataFrame({"kg_absorbed": kg_absorbed, "time": t_sec})
@@ -120,9 +115,7 @@ def simulate(
     results = {}
     with ThreadPoolExecutor() as executor:
         future_to_model = {
-            executor.submit(
-                calculate_bac_for_model, person, absorption, model, dt
-            ): model
+            executor.submit(calculate_bac_for_model, person, absorption, model, dt): model
             for model in simulation
         }
         for future in as_completed(future_to_model):
@@ -149,9 +142,7 @@ def aggregate_simulation_results(
     all_bac = pd.concat(df_list, axis=1)
     mean_bac = all_bac.mean(axis=1)
     var_bac = all_bac.var(axis=1)
-    aggregated = pd.DataFrame(
-        {"time": all_bac.index, "mean_bac": mean_bac, "var_bac": var_bac}
-    )
+    aggregated = pd.DataFrame({"time": all_bac.index, "mean_bac": mean_bac, "var_bac": var_bac})
     return aggregated.reset_index(drop=True)
 
 
@@ -185,9 +176,7 @@ def identify_threshold_times(
     segments_sober = (sober_bool != sober_bool.shift()).cumsum()
     valid_sober = aggregated_ts[sober_bool].groupby(segments_sober)
     if valid_sober.ngroups:
-        last_sober_indices = aggregated_ts.index[
-            segments_sober == segments_sober.iloc[-1]
-        ]
+        last_sober_indices = aggregated_ts.index[segments_sober == segments_sober.iloc[-1]]
         sober_time = aggregated_ts.loc[last_sober_indices[0], "time"]
 
     return drive_safe_time, sober_time

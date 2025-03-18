@@ -56,7 +56,7 @@ exclude = [
   "venv",
 ]
 indent-width = 4
-line-length = 88
+line-length = 100
 
 [tool.ruff.format]
 indent-style = "space"
@@ -93,8 +93,12 @@ ignore = [
   "PD008",
   "PD901",
   "PLR09",
+  "PGH004",
   "PLR2004",
-  "RET504"
+  "PLW0603",
+  "PTH123",
+  "RET504",
+  "SIM115",
 ]
 
 [tool.ruff.lint.isort]

@@ -1,17 +1,21 @@
 import pytest
 
-from bacflow.geolocation import _location_to_ISO_alpha_2, get_DUI_threshold, get_location
+from bacflow.geolocation import (
+    _location_to_ISO_alpha_2,
+    get_DUI_threshold,
+    get_location,
+)
 from bacflow.schemas import DriverProfile, DUIMapping
 
 
 @pytest.fixture
 def mapping() -> DUIMapping:
-    return dict(US={DriverProfile.regular: 0.05})
+    return {"US": {DriverProfile.regular: 0.05}}
 
 
 @pytest.mark.asyncio
 async def test_get_location():
-    assert _location_to_ISO_alpha_2((await get_location(33.749, -84.388))) == "US"
+    assert _location_to_ISO_alpha_2(await get_location(33.749, -84.388)) == "US"
 
 
 @pytest.mark.asyncio

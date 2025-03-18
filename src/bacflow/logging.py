@@ -21,16 +21,17 @@ def _set_package_root_logger() -> None:
     global _default_handler
 
     with _semaphore:
-        if _default_handler: return
-        
+        if _default_handler:
+            return
+
         _default_handler = logging.StreamHandler()  # sys.stderr as stream
-        
+
         # https://github.com/pyinstaller/pyinstaller/issues/7334#issuecomment-1357447176
         if sys.stderr is None:
             sys.stderr = open(os.devnull, "w")
 
         _default_handler.flush = sys.stderr.flush
-        
+
         package_root_logger = _get_package_root_logger()
         package_root_logger.addHandler(_default_handler)
         package_root_logger.setLevel(_default_logging_level)
@@ -70,8 +71,8 @@ def set_verbosity_error() -> None:
 
 def set_verbosity_fatal() -> None:
     set_verbosity(logging.FATAL)
-    
-    
+
+
 def set_handler(handler: logging.Handler) -> None:
     _set_package_root_logger()
 
@@ -82,28 +83,28 @@ def set_handler(handler: logging.Handler) -> None:
 
 def set_default_handler() -> None:
     set_handler(_default_handler)
-    
-    
+
+
 def unset_handler(handler: logging.Handler) -> None:
     _set_package_root_logger()
 
     assert handler is not None
 
     _get_package_root_logger().removeHandler(handler)
-    
-    
+
+
 def unset_default_handler() -> None:
     unset_handler(_default_handler)
 
 
 def set_propagation() -> None:
     _get_package_root_logger().propagate = True
-    
-    
+
+
 def unset_propagation() -> None:
     _get_package_root_logger().propagate = False
-    
-    
+
+
 def set_formatting() -> None:
     """sets formatting for all handlers bound to the root logger"""
     formatter = logging.Formatter(
@@ -112,12 +113,12 @@ def set_formatting() -> None:
 
     for handler in _get_package_root_logger().handlers:
         handler.setFormatter(formatter)
-        
+
 
 def unset_formatting() -> None:
     for handler in _get_package_root_logger().handlers:
         handler.setFormatter(None)
-        
+
 
 @lru_cache(None)
 def warning_once(self, *args, **kwargs):

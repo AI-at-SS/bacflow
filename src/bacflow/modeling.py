@@ -102,15 +102,12 @@ def calculate_bac_for_model(
     """
     r = calculate_body_factor(person, model)
     model_bac_ts = absorption.copy()
-    model_bac_ts["bac_excluding_elimination"] = model_bac_ts["kg_absorbed"] / (
-        r * person.weight
-    )
+    model_bac_ts["bac_excluding_elimination"] = model_bac_ts["kg_absorbed"] / (r * person.weight)
     model_bac_ts["eliminated"] = 0.0
 
     for i in range(1, len(model_bac_ts)):
         current_bac = (
-            model_bac_ts.at[i, "bac_excluding_elimination"]
-            - model_bac_ts.at[i - 1, "eliminated"]
+            model_bac_ts.at[i, "bac_excluding_elimination"] - model_bac_ts.at[i - 1, "eliminated"]
         )
         prev_bac = model_bac_ts.at[i - 1, "bac"] if "bac" in model_bac_ts.columns else 0
         current_aer = calc_aer(person.sex, prev_bac)
@@ -119,8 +116,6 @@ def calculate_bac_for_model(
             current_bac, elimination_interval
         )
 
-    model_bac_ts["bac"] = (
-        model_bac_ts["bac_excluding_elimination"] - model_bac_ts["eliminated"]
-    )
+    model_bac_ts["bac"] = model_bac_ts["bac_excluding_elimination"] - model_bac_ts["eliminated"]
     model_bac_ts["bac_perc"] = model_bac_ts["bac"] * 100
     return model_bac_ts

@@ -20,7 +20,7 @@ class Location:
     @property
     def latitude(self) -> float:
         return self.coords.latitude
-    
+
     @property
     def longitude(self) -> float:
         return self.coords.longitude

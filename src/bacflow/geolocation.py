@@ -7,7 +7,7 @@ from bacflow.schemas import DriverProfile, DUIMapping
 
 
 logging = get_logger()
-    
+
 
 def _location_to_ISO_alpha_2(location: geopy.Location) -> str:
     """ISO alpha-2 country code of a location"""
@@ -16,9 +16,7 @@ def _location_to_ISO_alpha_2(location: geopy.Location) -> str:
 
 async def get_location(latitude: float, longitude: float) -> geopy.Location:
     """reverse geocoding by latitude and longitude"""
-    async with Nominatim(
-        user_agent="BACflow", adapter_factory=AioHTTPAdapter
-    ) as geolocator:
+    async with Nominatim(user_agent="BACflow", adapter_factory=AioHTTPAdapter) as geolocator:
         return await geolocator.reverse((latitude, longitude), exactly_one=True)
 
 
@@ -37,4 +35,4 @@ async def get_DUI_threshold(
 
         logging.warning(message)
 
-        return
+        return  # noqa

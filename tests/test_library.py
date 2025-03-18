@@ -62,9 +62,7 @@ def test_compute_halflife_vector_with_food():
     food1 = FoodIntake(time=BASE_TIME + timedelta(minutes=5), category="light")
     food2 = FoodIntake(time=BASE_TIME + timedelta(minutes=15), category="heavy")
     food_intakes = [food1, food2]
-    t_sec = np.array(
-        [BASE_TIME.timestamp() + i * 60 for i in range(30)]
-    )  # 30-minute simulation
+    t_sec = np.array([BASE_TIME.timestamp() + i * 60 for i in range(30)])  # 30-minute simulation
     default_halflife = 720  # default: 12 minutes (720 sec)
     halflife_vector = compute_halflife_vector(t_sec, food_intakes, default_halflife)
 
