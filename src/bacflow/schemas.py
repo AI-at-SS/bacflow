@@ -47,14 +47,18 @@ class Sex(str, Enum):
 @dataclass
 class Person:
     DoB: date
-    height: float 
-    weight: float 
+    height: float
+    weight: float
     sex: Sex
 
     @property
     def age(self) -> int:
         today = date.today()
-        return today.year - self.DoB.year - ((today.month, today.day) < (self.DoB.month, self.DoB.day))
+        return (
+            today.year
+            - self.DoB.year
+            - ((today.month, today.day) < (self.DoB.month, self.DoB.day))
+        )
 
 
 @dataclass
@@ -84,12 +88,14 @@ class Drink:
         sip_volume = self.vol / self.sip_interval
         for i in range(self.sip_interval):
             sip_time = self.time + timedelta(minutes=i)
-            sips.append(Drink(
-                name=self.name,
-                vol=sip_volume,
-                alc_prop=self.alc_prop,
-                time=sip_time,
-                sip_interval=1
-            ))
+            sips.append(
+                Drink(
+                    name=self.name,
+                    vol=sip_volume,
+                    alc_prop=self.alc_prop,
+                    time=sip_time,
+                    sip_interval=1,
+                )
+            )
 
         return sips

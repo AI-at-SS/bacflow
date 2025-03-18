@@ -1,7 +1,9 @@
+from datetime import datetime
+
 import streamlit as st
 import streamlit_shadcn_ui as shadcn
-from database import init_db, check_login
-from datetime import datetime
+from database import check_login, init_db
+
 
 # Initialize the database (if not already done)
 init_db()

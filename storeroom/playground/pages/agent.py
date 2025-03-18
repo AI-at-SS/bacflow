@@ -24,10 +24,10 @@ class Agent:
 
 def format_manifest(manifest: Manifest) -> str:
     string = ""
-    
+
     for tool in manifest:
         string += f"- **{tool.name}**: {tool.description}\n\n"
-    
+
     return string
 
 
@@ -58,7 +58,7 @@ async def main():
             response = ""
             with st.spinner("Thinking..."):
                 response = await agent.invoke(messages=st.session_state["messages"])
-            
+
             st.markdown(response)
 
         st.session_state["messages"].append({"role": "assistant", "content": response})

@@ -1,6 +1,7 @@
 import streamlit as st
 import streamlit_shadcn_ui as shadcn
 
+
 def main():
     # Set page title and overall styling
     st.set_page_config(page_title="BACflow - Home", layout="wide")
@@ -47,18 +48,26 @@ def main():
             margin-bottom: 1rem;
         }
         </style>
-        """, unsafe_allow_html=True
+        """,
+        unsafe_allow_html=True,
     )
 
     # ---------------- Hero Section ----------------
     st.markdown('<div class="hero">', unsafe_allow_html=True)
     st.markdown("<h1>BACflow</h1>", unsafe_allow_html=True)
-    st.markdown("<h3>The Future of Blood Alcohol Estimation</h3>", unsafe_allow_html=True)
-    st.image("https://via.placeholder.com/1200x400.png?text=Your+Hero+Image+Here", use_column_width=True)
+    st.markdown(
+        "<h3>The Future of Blood Alcohol Estimation</h3>", unsafe_allow_html=True
+    )
+    st.image(
+        "https://via.placeholder.com/1200x400.png?text=Your+Hero+Image+Here",
+        use_column_width=True,
+    )
     st.markdown("</div>", unsafe_allow_html=True)
 
     # ---------------- Features Overview ----------------
-    st.markdown('<h2 class="section-header">Features Overview</h2>', unsafe_allow_html=True)
+    st.markdown(
+        '<h2 class="section-header">Features Overview</h2>', unsafe_allow_html=True
+    )
     st.markdown(
         """
         - **Dynamic Absorption Modeling:** Incorporates food intake data to adjust alcohol absorption dynamically.
@@ -66,7 +75,8 @@ def main():
         - **Threshold Detection:** Automatically identifies driving safe and sober times.
         - **Modern & Intuitive UI:** Built with Streamlit and shadcn UI components for a delightful experience.
         - **Secure Data Management:** User data stored safely in a local SQLite database.
-        """, unsafe_allow_html=True
+        """,
+        unsafe_allow_html=True,
     )
 
     # ---------------- Pricing Table ----------------
@@ -99,32 +109,41 @@ def main():
                 </tr>
             </tbody>
         </table>
-        """, unsafe_allow_html=True
+        """,
+        unsafe_allow_html=True,
     )
 
     # ---------------- FAQ Section ----------------
-    st.markdown('<h2 class="section-header">Frequently Asked Questions</h2>', unsafe_allow_html=True)
+    st.markdown(
+        '<h2 class="section-header">Frequently Asked Questions</h2>',
+        unsafe_allow_html=True,
+    )
     faqs = [
         {
             "question": "How accurate is BACflow?",
-            "answer": "BACflow leverages advanced simulation models based on validated research. It is designed for informational purposes only."
+            "answer": "BACflow leverages advanced simulation models based on validated research. It is designed for informational purposes only.",
         },
         {
             "question": "Can I use BACflow for legal decisions?",
-            "answer": "No. BACflow is for entertainment and research purposes only. Please consult legal and medical professionals for advice."
+            "answer": "No. BACflow is for entertainment and research purposes only. Please consult legal and medical professionals for advice.",
         },
         {
             "question": "How is my data stored?",
-            "answer": "All user data is securely stored in a local SQLite database and is not shared without your consent."
+            "answer": "All user data is securely stored in a local SQLite database and is not shared without your consent.",
         },
         {
             "question": "What support is available?",
-            "answer": "Please use the contact form below for any inquiries or support requests."
+            "answer": "Please use the contact form below for any inquiries or support requests.",
         },
     ]
     for faq in faqs:
-        st.markdown(f"<div class='faq-question'>Q: {faq['question']}</div>", unsafe_allow_html=True)
-        st.markdown(f"<div class='faq-answer'>A: {faq['answer']}</div>", unsafe_allow_html=True)
+        st.markdown(
+            f"<div class='faq-question'>Q: {faq['question']}</div>",
+            unsafe_allow_html=True,
+        )
+        st.markdown(
+            f"<div class='faq-answer'>A: {faq['answer']}</div>", unsafe_allow_html=True
+        )
         st.markdown("<hr>", unsafe_allow_html=True)
 
     # ---------------- Contact Form ----------------
@@ -132,14 +151,20 @@ def main():
     with st.form("contact_form"):
         name = shadcn.TextInput(label="Your Name", placeholder="Enter your name")
         email = shadcn.TextInput(label="Email", placeholder="Enter your email")
-        message = shadcn.TextArea(label="Message", placeholder="Enter your message", height=150)
+        message = shadcn.TextArea(
+            label="Message", placeholder="Enter your message", height=150
+        )
         submitted = st.form_submit_button("Send Message")
         if submitted:
             st.success("Thank you for reaching out! We'll get back to you soon.")
             # Implement sending email or storing the message as needed.
 
     st.markdown("<hr>", unsafe_allow_html=True)
-    st.markdown("<p style='text-align: center;'>© 2024 BACflow. All rights reserved.</p>", unsafe_allow_html=True)
+    st.markdown(
+        "<p style='text-align: center;'>© 2024 BACflow. All rights reserved.</p>",
+        unsafe_allow_html=True,
+    )
+
 
 if __name__ == "__main__":
     main()

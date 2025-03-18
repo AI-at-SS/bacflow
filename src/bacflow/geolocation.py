@@ -11,7 +11,7 @@ _geolocator = Nominatim(user_agent="BACflow")
 
 def decode_coordinates(location: dict) -> tuple[float, float]:
     coordinates = location.get("coords", {})
-    
+
     latitude = coordinates.get("latitude")
     longitude = coordinates.get("longitude")
 
@@ -29,7 +29,7 @@ def get_threshold_by_driver_profile(
         logging.warning(message)
 
         return None
-    
+
     if not location:
         message = f"Nominatim could not find the location"
         logging.warning(message)
