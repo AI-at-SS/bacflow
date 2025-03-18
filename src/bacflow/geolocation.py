@@ -56,7 +56,8 @@ async def get_DUI_threshold(
     mapping: DUIMapping,
 ) -> float:
     """driving under the influence (DUI) threshold by coordinates and driver profile"""
-    ISO_alpha_2 = _location_to_ISO_alpha_2(await get_location(latitude, longitude))
-    threshold = _ISO_alpha_2_to_DUI_threshold(ISO_alpha_2, profile, mapping)
+    record = await get_location(latitude, longitude)
+    record = _location_to_ISO_alpha_2(record)
+    record = _ISO_alpha_2_to_DUI_threshold(record, profile, mapping)
 
-    return threshold
+    return record
