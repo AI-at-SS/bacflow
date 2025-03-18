@@ -1,60 +1,40 @@
-import logging
-
-import pandas
+import geopy
+from geopy.adapters import AioHTTPAdapter
 from geopy.geocoders import Nominatim
 
-from bacflow.schemas import DriverProfile
+from bacflow.logging import get_logger
+from bacflow.schemas import DriverProfile, DUIMapping
 
 
-_geolocator = Nominatim(user_agent="BACflow")
+logging = get_logger()
+    
+
+def _location_to_ISO_alpha_2(location: geopy.Location) -> str:
+    """ISO alpha-2 country code of a location"""
+    return location.raw["address"]["country_code"].upper()
 
 
-def decode_coordinates(location: dict) -> tuple[float, float]:
-    coordinates = location.get("coords", {})
+async def get_location(latitude: float, longitude: float) -> geopy.Location:
+    """reverse geocoding by latitude and longitude"""
+    async with Nominatim(
+        user_agent="BACflow", adapter_factory=AioHTTPAdapter
+    ) as geolocator:
+        return await geolocator.reverse((latitude, longitude), exactly_one=True)
 
-    latitude = coordinates.get("latitude")
-    longitude = coordinates.get("longitude")
 
-    return latitude, longitude
-
-
-def get_threshold_by_driver_profile(
-    latitude: float, longitude: float, profile: DriverProfile, mapping: pandas.DataFrame
+async def get_DUI_threshold(
+    latitude: float, longitude: float, profile: DriverProfile, mapping: DUIMapping
 ) -> float | None:
-    """driving under the influence (DUI) threshold by location and driver profile"""
+    """driving under the influence (DUI) threshold by coordinates and driver profile"""
     try:
-        location = _geolocator.reverse((latitude, longitude), exactly_one=True)
-    except Exception as e:
-        message = f"Nominatim could not decode the coordinates: {e}"
+        location = await get_location(latitude, longitude)
+        ISO_alpha_2 = _location_to_ISO_alpha_2(location)
+
+        return mapping[ISO_alpha_2][profile]
+    except Exception:
+        message = "No DUI threshold for {} drivers at ({:.3f}, {:.3f})"
+        message = message.format(profile, latitude, longitude)
+
         logging.warning(message)
 
-        return None
-
-    if not location:
-        message = f"Nominatim could not find the location"
-        logging.warning(message)
-
-        return None
-
-    alpha_2 = location.raw.get("address", {}).get("country_code", "").upper()
-
-    if not alpha_2:
-        message = f"ISO alpha-2 country code is not available"
-        logging.warning(message)
-
-        return None
-
-    record = mapping[mapping["alpha-2"] == alpha_2]
-
-    if record.empty:
-        message = f"No information about the country {alpha_2}"
-        logging.warning(message)
-
-        return None
-
-    threshold = record.iloc[0][str(profile)]
-
-    if pandas.isna(threshold):
-        return None
-
-    return threshold
+        return

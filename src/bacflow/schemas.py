@@ -7,6 +7,25 @@ from typing_extensions import Self
 from bacflow.common import DoB_to_age
 
 
+@dataclass
+class Coordinates:
+    latitude: float
+    longitude: float
+
+
+@dataclass
+class Location:
+    coords: Coordinates
+
+    @property
+    def latitude(self) -> float:
+        return self.coords.latitude
+    
+    @property
+    def longitude(self) -> float:
+        return self.coords.longitude
+
+
 class FoodIntakeCategory(str, Enum):
     light = "light"  # small amount of food, typically consumed to curb hunger between meals, such as a piece of fruit, a handful of nuts, or a small yogurt.
     moderate = "moderate"  # sufficient amount of food to satisfy hunger, usually a regular meal, such as a sandwich, a bowl of salad, or a standard portion of pasta.
@@ -23,6 +42,9 @@ class DriverProfile(str, Enum):
 
     def __str__(self) -> str:
         return self.value
+
+
+DUIMapping = dict[str, dict[DriverProfile, float]]
 
 
 class Model(str, Enum):
