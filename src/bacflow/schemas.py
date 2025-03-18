@@ -1,9 +1,10 @@
-import typing
 from dataclasses import dataclass, field
 from datetime import date, datetime, timedelta
 from enum import Enum
 
 from typing_extensions import Self
+
+from bacflow.common import DoB_to_age
 
 
 class FoodIntakeCategory(str, Enum):
@@ -53,12 +54,7 @@ class Person:
 
     @property
     def age(self) -> int:
-        today = date.today()
-        return (
-            today.year
-            - self.DoB.year
-            - ((today.month, today.day) < (self.DoB.month, self.DoB.day))
-        )
+        return DoB_to_age(self.DoB)
 
 
 @dataclass
