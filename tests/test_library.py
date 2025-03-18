@@ -193,10 +193,9 @@ def test_aggregate_simulation_results():
     # Mean BAC.
     np.testing.assert_allclose(aggregated["mean_bac"], (df1["bac"] + df2["bac"]) / 2)
     # Variance.
-    expected_var = (
-        (df1["bac"] - (df1["bac"] + df2["bac"]) / 2) ** 2
-        + (df2["bac"] - (df1["bac"] + df2["bac"]) / 2) ** 2
-    )
+    expected_var = (df1["bac"] - (df1["bac"] + df2["bac"]) / 2) ** 2 + (
+        df2["bac"] - (df1["bac"] + df2["bac"]) / 2
+    ) ** 2
     np.testing.assert_allclose(aggregated["var_bac"], expected_var)
 
 
