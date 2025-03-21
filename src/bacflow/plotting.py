@@ -1,8 +1,10 @@
 import pandas as pd
 import plotly.graph_objects as go
 
+from bacflow.schemas import SimulationParameters
 
-def plot_simulation(aggregated: pd.DataFrame, driving_limit: float) -> go.Figure:
+
+def plot_simulation(aggregated: pd.DataFrame, parameters: SimulationParameters) -> go.Figure:
     """
     Plot the aggregated simulation result.
     Expects an aggregated DataFrame with columns: 'time', 'mean_bac', 'var_bac'.
@@ -47,7 +49,7 @@ def plot_simulation(aggregated: pd.DataFrame, driving_limit: float) -> go.Figure
     fig.add_trace(
         go.Scatter(
             x=aggregated["time"],
-            y=[driving_limit * 100] * len(aggregated),
+            y=[parameters.DUI * 100] * len(aggregated),
             mode="lines",
             line={"dash": "dash", "color": "red"},
             name="Driving Limit",

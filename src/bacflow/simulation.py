@@ -5,7 +5,7 @@ import numpy as np
 import pandas as pd
 
 from bacflow.modeling import calculate_bac_for_model
-from bacflow.schemas import Drink, FoodIntake, Model, Person
+from bacflow.schemas import SimulationConfig, SimulationParameters, Beverage, Food, Model, Person
 
 
 # Mapping of food categories to absorption halflife in seconds (6, 9, 12, 15, 18 minutes)
@@ -19,7 +19,7 @@ FOOD_HALFLIFE_MAP = {
 
 
 def compute_halflife_vector(
-    t_sec: np.ndarray, food_intakes: list[FoodIntake], default_halflife: float
+    t_sec: np.ndarray, food_intakes: list[Food], default_halflife: float
 ) -> np.ndarray:
     """
     Given a vector of time stamps (in seconds), compute an effective absorption halflife for each time point.
@@ -42,12 +42,12 @@ def compute_halflife_vector(
 
 
 def cumulative_absorption(
-    drinks: list[Drink],
+    drinks: list[Beverage],
     start_time: datetime,
     end_time: datetime,
     dt: float,  # simulation time step in seconds
     default_halflife: float,
-    food_intakes: list[FoodIntake] | None = None,
+    food_intakes: list[Food] | None = None,
     initial_alc: float = 0.0,
 ) -> pd.DataFrame:
     """
@@ -87,17 +87,7 @@ def cumulative_absorption(
     return df
 
 
-def simulate(
-    drinks: list[Drink],
-    person: Person,
-    start_time: datetime,
-    end_time: datetime,
-    dt: float,  # simulation time step in seconds
-    default_halflife: float,
-    initial_alc: float,
-    simulation: list[Model],
-    food_intakes: list[FoodIntake] | None = None,
-) -> dict[Model, pd.DataFrame]:
+def simulate(config: SimulationConfig) -> pd.DataFrame:
     """
     Runs the BAC simulation using the provided parameters.
     The simulation:
@@ -122,6 +112,18 @@ def simulate(
             model = future_to_model[future]
             results[model] = future.result()
     return results
+
+
+def alerting(
+    simulation: pd.DataFrame, parameters: SimulationParameters
+) -> tuple[datetime | None, datetime | None]:
+    """detects alerting for the given simulation and parameters.
+
+    The alerting convers the following two moments:
+      - safe driving time: The time BAC will be under the DUI threshold for good.
+      - sobriety: The time BAC will be null for good.
+    """
+    ...
 
 
 def aggregate_simulation_results(

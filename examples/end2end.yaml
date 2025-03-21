@@ -1,0 +1,31 @@
+dataset:
+  user:
+    DoB: 1997-05-31
+    height: 1.83
+    weight: 85
+    sex: M
+  food:
+    - category: moderate
+      consumed: 2023-01-01T13:00:00+00:00
+  beverage:
+    - category: beer
+      consumed: 2023-01-01T12:10:30+00:00
+      volume: 0.33
+      proportion: 0.05
+      interval: 10
+    - category: shot
+      consumed: 2023-01-01T13:00:00+00:00
+      volume: 0.04
+      proportion: 0.40
+      interval: 1
+parameters:
+  start: 2023-01-01T12:00:00+00:00
+  end: 2023-01-01T16:00:00+00:00
+  halflife: 720
+  modeling:
+    - average
+    - Seidl
+  quantity: 0.0
+  stepping: 600
+  sobriety: true
+  DUI: 0.02

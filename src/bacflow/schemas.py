@@ -2,6 +2,7 @@ from dataclasses import dataclass, field
 from datetime import date, datetime, timedelta
 from enum import Enum
 
+from dacite import Config, from_dict
 from typing_extensions import Self
 
 from bacflow.common import DoB_to_age
@@ -63,7 +64,7 @@ class FoodCategory(str, Enum):
 @dataclass
 class Food:
     category: FoodCategory
-    time: datetime
+    consumed: datetime
 
 
 class BeverageCategory(str, Enum):
@@ -81,33 +82,61 @@ class BeverageCategory(str, Enum):
 @dataclass
 class Beverage:
     category: BeverageCategory
-    time: datetime
+    consumed: datetime
     volume: float
     proportion: float
     interval: int
     quantity: float = field(init=False)
 
     def __post_init__(self):
-        volume = self.volume * self.proportion
-        self.quantity = volume * 0.789
+        self.quantity = self.volume * self.proportion * 0.789
 
     def distribute(self) -> list[Self]:
         """ditributes the beverage into uniform sips in the time interval"""
         if self.interval == 1:
             return [self]
 
-        sips = []
+        sippings = []
         volume = self.volume / self.interval
 
         for i in range(self.interval):
-            sips.append(
+            sippings.append(
                 Beverage(
                     category=self.category,
-                    time=self.time + timedelta(minutes=i),
+                    consumed=self.consumed + timedelta(minutes=i),
                     volume=volume,
                     proportion=self.proportion,
                     interval=1,
                 )
             )
 
-        return sips
+        return sippings
+
+
+@dataclass
+class SimulationDataset:
+    user: Person
+    food: list[Food]
+    beverage: list[Beverage]
+
+
+@dataclass
+class SimulationParameters:
+    start: datetime
+    end: datetime
+    halflife: int
+    modeling: list[Model]
+    quantity: float
+    stepping: float
+    sobriety: bool
+    DUI: float
+
+
+@dataclass
+class SimulationConfig:
+    dataset: SimulationDataset
+    parameters: SimulationParameters
+
+    @classmethod
+    def from_mapping(cls, mapping: dict) -> Self:
+        return from_dict(cls, mapping, config=Config(cast=[Enum]))
