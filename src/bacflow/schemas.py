@@ -120,9 +120,9 @@ class Beverage:
 
 @dataclass
 class SimulationDataset:
-    user: Person
-    food: list[Food]
-    beverage: list[Beverage]
+    drinking: list[Beverage]
+    eating: list[Food]
+    person: Person
 
 
 @dataclass
@@ -133,8 +133,7 @@ class SimulationParameters:
     modeling: list[Model]
     quantity: float
     stepping: float
-    sobriety: bool
-    DUI: float
+    thresholding: list[float]
 
 
 def _consumed_in_the_simulation(consumable: Consumable, parameters: SimulationParameters) -> bool:
@@ -159,7 +158,9 @@ class SimulationConfig:
     parameters: SimulationParameters
 
     def __post_init__(self):
-        for consumable in self.dataset.food + self.dataset.beverage:
+        dataset = self.dataset
+        
+        for consumable in dataset.drinking + dataset.eating:
             if not _consumed_in_the_simulation(consumable, self.parameters):            
                 raise SimulationException(consumable, self.parameters)
 

@@ -29,8 +29,8 @@ def compute_halflife_vector(
     if not food_intakes:
         return np.full(t_sec.shape, default_halflife)
     # Sort food_intakes by time
-    sorted_food = sorted(food_intakes, key=lambda f: f.time)
-    food_times = np.array([f.time.timestamp() for f in sorted_food])
+    sorted_food = sorted(food_intakes, key=lambda f: f.consumed)
+    food_times = np.array([f.consumed.timestamp() for f in sorted_food])
     food_values = np.array(
         [FOOD_HALFLIFE_MAP.get(f.category.lower(), default_halflife) for f in sorted_food]
     )
@@ -73,13 +73,13 @@ def cumulative_absorption(
     absorption_mat = np.zeros((len(drinks), len(t_sec)))
 
     for i, drink in enumerate(drinks):
-        drink_start = drink.time.timestamp()
+        drink_start = drink.consumed.timestamp()
         # Compute time deltas for all simulation points
         time_deltas = t_sec - drink_start
         # For t < drink_start, absorption is 0
         positive_deltas = np.maximum(time_deltas, 0)
         # Compute absorption using the dynamic halflife at each time step
-        absorption_mat[i, :] = drink.alc_kg * (1 - np.exp(-positive_deltas * ln2 / halflife_vector))
+        absorption_mat[i, :] = drink.quantity * (1 - np.exp(-positive_deltas * ln2 / halflife_vector))
 
     kg_absorbed = absorption_mat.sum(axis=0) + initial_alc
     df = pd.DataFrame({"kg_absorbed": kg_absorbed, "time": t_sec})
@@ -96,17 +96,23 @@ def simulate(config: SimulationConfig) -> pd.DataFrame:
 
     Returns a dict mapping each Model to its simulation DataFrame (which contains a 'bac' column).
     """
-    if not drinks:
+    if not config.dataset.drinking:
         return {}
 
     absorption = cumulative_absorption(
-        drinks, start_time, end_time, dt, default_halflife, food_intakes, initial_alc
+        config.dataset.drinking, 
+        config.parameters.start,
+        config.parameters.end,
+        config.parameters.stepping,
+        config.parameters.halflife,
+        config.dataset.eating,
+        config.parameters.quantity
     )
     results = {}
     with ThreadPoolExecutor() as executor:
         future_to_model = {
-            executor.submit(calculate_bac_for_model, person, absorption, model, dt): model
-            for model in simulation
+            executor.submit(calculate_bac_for_model, config.dataset.person, absorption, model, config.parameters.stepping): model
+            for model in config.parameters.modeling
         }
         for future in as_completed(future_to_model):
             model = future_to_model[future]
