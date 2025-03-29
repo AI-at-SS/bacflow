@@ -1,6 +1,7 @@
 from dataclasses import dataclass, field
 from datetime import date, datetime, timedelta
 from enum import Enum
+from typing import Protocol
 
 from dacite import Config, from_dict
 from typing_extensions import Self
@@ -50,6 +51,10 @@ class Person:
     @property
     def age(self) -> int:
         return DoB_to_age(self.DoB)
+    
+
+class Consumable(Protocol):
+    consumed: datetime
 
 
 class FoodCategory(str, Enum):
@@ -70,7 +75,7 @@ class Food:
 class BeverageCategory(str, Enum):
     beer = "beer"
     wine = "wine"
-    longdrink = "long drink"
+    longdrink = "longdrink"
     cocktail = "cocktail"
     shot = "shot"
     eggnog = "eggnog"
@@ -83,30 +88,30 @@ class BeverageCategory(str, Enum):
 class Beverage:
     category: BeverageCategory
     consumed: datetime
-    volume: float
-    proportion: float
-    interval: int
+    dilution: int
     quantity: float = field(init=False)
+    proportion: float
+    volume: float
 
     def __post_init__(self):
         self.quantity = self.volume * self.proportion * 0.789
 
     def distribute(self) -> list[Self]:
         """ditributes the beverage into uniform sips in the time interval"""
-        if self.interval == 1:
+        if self.dilution == 1:
             return [self]
 
         sippings = []
-        volume = self.volume / self.interval
+        volume = self.volume / self.dilution
 
-        for i in range(self.interval):
+        for i in range(self.dilution):
             sippings.append(
                 Beverage(
                     category=self.category,
                     consumed=self.consumed + timedelta(minutes=i),
-                    volume=volume,
+                    dilution=1,
                     proportion=self.proportion,
-                    interval=1,
+                    volume=volume,
                 )
             )
 
@@ -132,10 +137,31 @@ class SimulationParameters:
     DUI: float
 
 
+def _consumed_in_the_simulation(consumable: Consumable, parameters: SimulationParameters) -> bool:
+    """ensures a consumable is consumed within the simulation time range."""
+    return parameters.start < consumable.consumed < parameters.end
+
+
+class SimulationException(Exception):
+    """raises when food or beverage is consumed outside the simulation time range"""
+
+    def __init__(self, consumable: Consumable, parameters: SimulationParameters):
+        message = "The consumable {} is consumed outside the simulation time range ({}, {})"
+        message = message.format(consumable, parameters.start, parameters.end)
+
+        self.message = message
+        super().__init__(self.message)
+
+
 @dataclass
 class SimulationConfig:
     dataset: SimulationDataset
     parameters: SimulationParameters
+
+    def __post_init__(self):
+        for consumable in self.dataset.food + self.dataset.beverage:
+            if not _consumed_in_the_simulation(consumable, self.parameters):            
+                raise SimulationException(consumable, self.parameters)
 
     @classmethod
     def from_mapping(cls, mapping: dict) -> Self:
