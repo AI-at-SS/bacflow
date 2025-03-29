@@ -9,11 +9,13 @@ simulation framework for blood alcohol content (BAC) estimation.
 </div>
 
 ## 🌟 overview
+
 BACflow is the minute-scale SOTA simulation framework for blood alcohol content (BAC) estimation with support for all classical modelling methods derived from E. Widmark's research[^1], for Michaelis-Menten kinetics, and for dynamic modeling of food intake.
 
 The framework is advancing the SOTA in all three phases of alcohol interaction within the human body: absorption, distribution, and elimination.
 
 ## ✨ features
+
 - **dynamic alcohol absorption**: adjusts alcohol absorption halflife based on food intake data.
 - **flexible simulation**: supports user-defined simulation bounds, initial conditions, and time-step granularity.
 - **multiple models**: includes Seidl, Widmark, Forrest, Watson, Ulrich, and an average model.
@@ -22,6 +24,7 @@ The framework is advancing the SOTA in all three phases of alcohol interaction w
 - **modular design**: separates core BAC computations from user interfaces.
 
 ## 📦 installation
+
 Install BACflow using pip (Python 3.8+):
 
 ```bash
@@ -29,6 +32,7 @@ pip install bacflow
 ```
 
 ## 💻 usage
+
 Below is a simple example to simulate BAC from a list of drinks using a single model:
 
 ```python
@@ -68,9 +72,11 @@ uv run examples/end2end.py
 and see what a complete [simulation config](examples/end2end.yaml) is made of.
 
 ## 📚 API documentation
+
 API documentation will be available in future releases.
 
 ## 🤝 contributing
+
 Contributions are welcome! Fork the repository, create a branch for your feature or bug fix, write tests to cover your changes, and submit a pull request.
 
 ```bash
@@ -80,9 +86,11 @@ uv sync --all-extras
 ```
 
 ## 🔗 license
+
 See the [LICENSE](LICENSE) file for more details.
 
 ## 🙌 acknowledgements
+
 Inspired by the foundational work of Widmark and further studies on alcohol metabolism. Special thanks to all contributors and the open-source community.
 
 - [BAC-simulator](https://github.com/bcyran/bac-simulator)
