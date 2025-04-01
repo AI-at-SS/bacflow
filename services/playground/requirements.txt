@@ -1,4 +1,0 @@
-pycountry>24
-streamlit>1
-streamlit-js-eval>0.1
--e ../../bacflow

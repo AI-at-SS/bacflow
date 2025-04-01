@@ -1,0 +1,36 @@
+dataset:
+  drinking:
+    - category: shot
+      consumed: 2023-01-01T12:10:00+00:00
+      dilution: 1
+      proportion: 0.40
+      volume: 0.04
+    - category: beer
+      consumed: 2023-01-01T13:00:00+00:00
+      dilution: 10
+      proportion: 0.05
+      volume: 0.33
+  eating:
+    - category: light
+      consumed: 2023-01-01T12:15:00+00:00
+    - category: heavy
+      consumed: 2023-01-01T13:00:00+00:00
+  person:
+    DoB: 1997-05-31
+    height: 1.83
+    weight: 85
+    sex: M
+parameters:
+  start: 2023-01-01T12:00:00+00:00
+  end: 2023-01-01T16:00:00+00:00
+  halflife: 720
+  modeling:
+    - average
+    - Seidl
+  quantity: 0.0
+  stepping: 600
+  thresholding:
+    - description: sobriety
+      value: 0.
+    - description: DUI
+      value: 0.05

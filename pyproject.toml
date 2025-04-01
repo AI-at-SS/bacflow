@@ -1,0 +1,128 @@
+[build-system]
+requires = ["hatchling>1"]
+build-backend = "hatchling.build"
+
+
+[project]
+name = "bacflow"
+version = "0.1.0"
+description = "A simulation framework for blood alcohol content (BAC) estimation"
+readme = "README.md"
+requires-python = ">=3.10"
+authors = [{name = "Federico Minutoli", email = "fede97.minutoli@gmail.com"}]
+license = {file = "LICENSE"}
+keywords = ["BAC", "mindfulness", "modeling", "safety", "simulation", "time-series-analysis"]
+dependencies = [
+  "aiohttp<4",
+  "dacite<2",
+  "geopy<3",
+  "numpy<3",
+  "pandas<3",
+  "plotly<7"
+]
+
+[project.optional-dependencies]
+cu12 = [
+  "cudf-cu12>25,<26",
+]
+
+
+[dependency-groups]
+contrib = [
+  "mypy<2",
+  "pre-commit<5",
+  "pytest<9",
+  "pytest-asyncio>0.24,<1",
+  "setuptools<71",
+]
+
+
+[tool.pytest.ini_options]
+asyncio_default_fixture_loop_scope = "function"
+
+
+[tool.ruff]
+src = ["src"]
+exclude = [
+  ".git-rewrite",
+  ".git",
+  ".ipynb_checkpoints",
+  ".mypy_cache",
+  ".nox",
+  ".pytest_cache",
+  ".pytype",
+  ".ruff_cache",
+  ".tox",
+  ".venv",
+  ".vscode",
+  "build",
+  "dist",
+  "site-packages",
+  "storeroom",
+  "venv",
+]
+indent-width = 4
+line-length = 100
+
+[tool.ruff.format]
+indent-style = "space"
+line-ending = "auto"
+quote-style = "double"
+
+[tool.ruff.lint]
+select = [
+  "ARG",
+  "B",
+  "C4",
+  "EM",
+  "EXE",
+  "G",
+  "I",
+  "ICN",
+  "NPY",
+  "PD",
+  "PGH",
+  "PIE",
+  "PL",
+  "PT",
+  "PTH",
+  "RET",
+  "RUF",
+  "SIM",
+  "T20",
+  "UP",
+  "YTT",
+]
+ignore = [
+  "B008",
+  "ICN001",
+  "PD008",
+  "PD901",
+  "PLR09",
+  "PGH004",
+  "PLR2004",
+  "PLW0603",
+  "PTH123",
+  "RET504",
+  "SIM115",
+]
+
+[tool.ruff.lint.isort]
+known-first-party = ["bacflow"]
+lines-after-imports = 2
+
+[tool.ruff.lint.per-file-ignores]
+"examples/**" = ["T20"]
+"tests/**" = ["T20"]
+
+
+[tool.uv]
+default-groups = ["contrib"]
+
+[tool.uv.sources]
+cudf-cu12 = { index = "nvidia" }
+
+[[tool.uv.index]]
+name = "nvidia"
+url = "https://pypi.nvidia.com"
+explicit = true
