@@ -3,6 +3,7 @@ from datetime import date, datetime, timedelta
 from enum import Enum
 from typing import Protocol
 
+import yaml
 from dacite import Config, from_dict
 from typing_extensions import Self
 
@@ -116,6 +117,12 @@ class Beverage:
             )
 
         return sippings
+    
+
+@dataclass(frozen=True)
+class Threshold:
+    description: str
+    value: float
 
 
 @dataclass
@@ -133,7 +140,7 @@ class SimulationParameters:
     modeling: list[Model]
     quantity: float
     stepping: float
-    thresholding: list[float]
+    thresholding: list[Threshold]
 
 
 def _consumed_in_the_simulation(consumable: Consumable, parameters: SimulationParameters) -> bool:
@@ -141,28 +148,37 @@ def _consumed_in_the_simulation(consumable: Consumable, parameters: SimulationPa
     return parameters.start < consumable.consumed < parameters.end
 
 
-class SimulationException(Exception):
-    """raises when food or beverage is consumed outside the simulation time range"""
-
-    def __init__(self, consumable: Consumable, parameters: SimulationParameters):
-        message = "The consumable {} is consumed outside the simulation time range ({}, {})"
-        message = message.format(consumable, parameters.start, parameters.end)
-
-        self.message = message
-        super().__init__(self.message)
-
-
 @dataclass
 class SimulationConfig:
+    """The blood alcohol concentration simulation config"""
     dataset: SimulationDataset
     parameters: SimulationParameters
 
-    def __post_init__(self):
-        dataset = self.dataset
-        
-        for consumable in dataset.drinking + dataset.eating:
-            if not _consumed_in_the_simulation(consumable, self.parameters):            
-                raise SimulationException(consumable, self.parameters)
+    @classmethod
+    def from_file(cls, absfile: str) -> Self:
+        with open(absfile, "r") as f:
+            mapping = yaml.safe_load(f)
+
+        return cls.from_mapping(mapping)
+
+    @classmethod
+    def from_mapping(cls, mapping: dict) -> Self:
+        return from_dict(cls, mapping, config=Config(cast=[Enum]))
+
+
+@dataclass
+class SimulationOutput:
+    """The blood alcohol concentration simulation output"""
+    timestamp: list[float]
+    mean: list[float]
+    stddev: list[float]
+
+    @classmethod
+    def from_file(cls, absfile: str) -> Self:
+        with open(absfile, "r") as f:
+            mapping = yaml.safe_load(f)
+
+        return cls.from_mapping(mapping)
 
     @classmethod
     def from_mapping(cls, mapping: dict) -> Self:

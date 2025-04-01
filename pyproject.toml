@@ -8,10 +8,10 @@ name = "bacflow"
 version = "0.1.0"
 description = "A simulation framework for blood alcohol content (BAC) estimation"
 readme = "README.md"
-requires-python = ">3.9"
+requires-python = ">=3.10"
 authors = [{name = "Federico Minutoli", email = "fede97.minutoli@gmail.com"}]
 license = {file = "LICENSE"}
-keywords = ["BAC", "mindfulness", "modeling", "safety", "simulation"]
+keywords = ["BAC", "mindfulness", "modeling", "safety", "simulation", "time-series-analysis"]
 dependencies = [
   "aiohttp<4",
   "dacite<2",
@@ -19,6 +19,11 @@ dependencies = [
   "numpy<3",
   "pandas<3",
   "plotly<7"
+]
+
+[project.optional-dependencies]
+cu12 = [
+  "cudf-cu12>25,<26",
 ]
 
 
@@ -113,3 +118,11 @@ lines-after-imports = 2
 
 [tool.uv]
 default-groups = ["contrib"]
+
+[tool.uv.sources]
+cudf-cu12 = { index = "nvidia" }
+
+[[tool.uv.index]]
+name = "nvidia"
+url = "https://pypi.nvidia.com"
+explicit = true

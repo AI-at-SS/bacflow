@@ -2,11 +2,7 @@ import geopy
 from geopy.adapters import AioHTTPAdapter
 from geopy.geocoders import Nominatim
 
-from bacflow.logging import get_logger
 from bacflow.schemas import DriverProfile, DUIMapping
-
-
-logging = get_logger()
 
 
 class MissingDUI4ISOException(Exception):
@@ -56,8 +52,9 @@ async def get_DUI_threshold(
     mapping: DUIMapping,
 ) -> float:
     """driving under the influence (DUI) threshold by coordinates and driver profile"""
-    record = await get_location(latitude, longitude)
-    record = _location_to_ISO_alpha_2(record)
-    record = _ISO_alpha_2_to_DUI_threshold(record, profile, mapping)
+    location = await get_location(latitude, longitude)
 
-    return record
+    finding = _location_to_ISO_alpha_2(location)
+    finding = _ISO_alpha_2_to_DUI_threshold(finding, profile, mapping)
+
+    return finding

@@ -7,12 +7,9 @@ from bacflow.schemas import SimulationConfig
 from bacflow.simulation import alerting, simulate
 
 
-absfile = os.path.join(os.path.dirname(__file__), "end2end.yaml")
+absfile = os.path.join(os.path.dirname(__file__), "config.yaml")
 
-with open(absfile, "r") as f:
-    mapping = yaml.safe_load(f)
-
-config = SimulationConfig.from_mapping(mapping)
+config = SimulationConfig.from_file(absfile)
 
 simulation = simulate(config)
 
